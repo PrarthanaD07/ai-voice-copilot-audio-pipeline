@@ -7,6 +7,22 @@ The AI Voice Co-Pilot Audio Pipeline is a TypeScript-based implementation that d
 The system uses a mock microphone to generate audio frames, processes the audio data, calculates audio characteristics and detects speech activity.
 
 This implementation provides a foundation for developing a complete AI Voice Co-Pilot system.
+## Audio Pipeline Architecture
+
+```text
+Mock Microphone
+      |
+      v
+Audio Processor
+      |
+      v
+Voice Activity Detection (VAD)
+      |
+      v
+Pipeline Output
+      |
+      v
+Automated Tests
 
 ## 2. Objectives
 
