@@ -28,14 +28,15 @@ This implementation provides a foundation for developing a complete AI Voice Co-
 
 ## 4. Project Structure
 
-text
+```text
 llmaudio/
 │
 ├── src/
 │   ├── audio/
 │   │   ├── mock-microphone.ts
 │   │   ├── audio-processor.ts
-│   │   └── vad.ts
+│   │   ├── vad.ts
+│   │   └── processor.test.mts
 │   │
 │   ├── schemas/
 │   │   └── audio.schema.ts
@@ -46,14 +47,17 @@ llmaudio/
 ├── tests/
 │   ├── mock-microphone.test.mts
 │   ├── vad.test.mts
-│   └── audio-pipeline.integration.test.mts
+│   ├── audio-pipeline.integration.test.mts
+│   └── image.png
 │
+├── .gitignore
 ├── package.json
+├── package-lock.json
 ├── tsconfig.json
 └── README.md
-```
 
-Note: The Audio Processor test is currently located at `src/audio/processor.test.mts`.
+
+Note: The Audio Processor test is currently located at src/audio/processor.test.mts.
 
 ## 5. Core Components
 
@@ -93,13 +97,19 @@ Demonstrates the complete workflow from mock microphone input to audio processin
 
 ## 6. Audio Processing Workflow
 
-![Audio Pipeline](tests/image.png)Initialization: Load the audio configuration.
-Audio Input: Start the mock microphone.
-Frame Generation: Generate audio frames.
-Audio Processing: Calculate RMS and peak amplitude.
-Speech Detection: Analyze RMS values using VAD.
-Event Generation: Identify speech start and speech end.
-Output: Display processing results.
+![Audio Pipeline](tests/image.png)
+
+The audio pipeline follows these steps:
+
+1. **Initialization:** Load the audio configuration.
+2. **Audio Input:** Start the mock microphone.
+3. **Frame Generation:** Generate audio frames.
+4. **Audio Processing:** Calculate RMS and peak amplitude.
+5. **Speech Detection:** Analyze RMS values using VAD.
+6. **Event Generation:** Identify speech start and speech end.
+7. **Output:** Display processing results.
+
+
 ## 7. Installation
 
 Install project dependencies:
@@ -144,12 +154,11 @@ The project has been tested using Vitest and the V8 coverage provider.
 ### Code Coverage Report
 
 | Coverage Metric | Percentage |
-| --------------- | ---------: |s
-| Statements      |     96.36% |
-| Branches        |     83.33% |
-| Functions       |       100% |
-| Lines           |       100% |
-
+|-----------------|-----------:|
+| Statements      | 96.36%     |
+| Branches        | 83.33%     |
+| Functions       | 100%       |
+| Lines           | 100%       |
 ### Verification
 
 * All 14 unit and integration tests passed.
