@@ -28,7 +28,7 @@ This implementation provides a foundation for developing a complete AI Voice Co-
 
 ## 4. Project Structure
 
-```text
+text
 llmaudio/
 │
 ├── src/
@@ -93,8 +93,7 @@ Demonstrates the complete workflow from mock microphone input to audio processin
 
 ## 6. Audio Processing Workflow
 
-![alt text](image.png)
-Initialization: Load the audio configuration.
+![Audio Pipeline](tests/image.png)Initialization: Load the audio configuration.
 Audio Input: Start the mock microphone.
 Frame Generation: Generate audio frames.
 Audio Processing: Calculate RMS and peak amplitude.
@@ -105,37 +104,28 @@ Output: Display processing results.
 
 Install project dependencies:
 
-```bash
 npm install
-```
 
 ## 8. Running the Project
 
 Run the CLI demonstration:
 
-```bash
 npm run demo
-```
+
 
 Run the complete audio pipeline demonstration:
 
-```bash
 npm run pipeline
-```
+
 
 Run unit and integration tests:
 
-```bash
 npm test
-```
+
 
 Check TypeScript compilation:
 
-```bash
 npx tsc --noEmit
-```
-
-## 9. Testing Results
 
 ## 9. Testing and Coverage Results
 
@@ -154,7 +144,7 @@ The project has been tested using Vitest and the V8 coverage provider.
 ### Code Coverage Report
 
 | Coverage Metric | Percentage |
-| --------------- | ---------: |
+| --------------- | ---------: |s
 | Statements      |     96.36% |
 | Branches        |     83.33% |
 | Functions       |       100% |
@@ -190,3 +180,4 @@ The results demonstrate that the core audio processing components are functionin
 ## 12. Conclusion
 
 The project successfully demonstrates the foundational audio pipeline of an AI Voice Co-Pilot. It establishes structured audio data handling, mock microphone input, audio processing, speech activity detection and automated testing.
+
