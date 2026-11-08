@@ -1,5 +1,5 @@
 # AI Voice Co-Pilot – Audio Pipeline
-
+![Audio Pipeline Tests](https://github.com/PrarthanaD07/ai-voice-copilot-audio-pipeline/actions/workflows/tests.yml/badge.svg)
 ## 1. Project Overview
 
 The AI Voice Co-Pilot Audio Pipeline is a TypeScript-based implementation that demonstrates the initial audio processing workflow of a voice-enabled AI assistant.
