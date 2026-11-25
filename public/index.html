@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Co-Pilot</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+
+        button {
+            padding: 14px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #start {
+            background: #22c55e;
+        }
+
+        #stop {
+            background: #ef4444;
+            color: white;
+        }
+
+        #status {
+            margin-top: 30px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>AI Voice Co-Pilot</h1>
+    <p>Real-Time Microphone Audio Capture</p>
+
+    <button id="start">Start Microphone</button>
+    <button id="stop" disabled>Stop Microphone</button>
+
+    <div id="status">Status: Idle</div>
+
+    <script>
+        let audioContext;
+        let microphone;
+        let processor;
+        let stream;
+
+        const FRAME_SIZE = 320;
+        const BATCH_SIZE = 1600;
+
+        let frameBuffer = new Int16Array(BATCH_SIZE);
+        let frameOffset = 0;
+
+        const status = document.getElementById("status");
+
+        document.getElementById("start").onclick = startMicrophone;
+        document.getElementById("stop").onclick = stopMicrophone;
+
+        async function startMicrophone() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    }
+                });
+
+                audioContext = new AudioContext({
+                    sampleRate: 16000
+                });
+
+                await audioContext.resume();
+
+                microphone =
+                    audioContext.createMediaStreamSource(stream);
+
+                processor =
+                    audioContext.createScriptProcessor(1024, 1, 1);
+
+                const silentOutput = audioContext.createGain();
+                silentOutput.gain.value = 0;
+
+                processor.onaudioprocess = processAudio;
+
+                microphone.connect(processor);
+                processor.connect(silentOutput);
+                silentOutput.connect(audioContext.destination);
+
+                document.getElementById("start").disabled = true;
+                document.getElementById("stop").disabled = false;
+
+                status.textContent =
+                    "Status: Recording at " +
+                    audioContext.sampleRate + " Hz";
+
+            } catch (error) {
+                console.error(error);
+                status.textContent = "Microphone error: " + error.message;
+                stopMicrophone();
+            }
+        }
+
+        function processAudio(event) {
+            const input = event.inputBuffer.getChannelData(0);
+
+            for (let i = 0; i < input.length; i++) {
+                const sample = Math.max(-1, Math.min(1, input[i]));
+
+                const pcm = sample < 0
+                    ? sample * 32768
+                    : sample * 32767;
+
+                frameBuffer[frameOffset++] = Math.round(pcm);
+
+                if (frameOffset === BATCH_SIZE) {
+                    sendAudioBatch(frameBuffer);
+                    frameBuffer = new Int16Array(BATCH_SIZE);
+                    frameOffset = 0;
+                }
+            }
+        }
+
+        async function sendAudioBatch(buffer) {
+            try {
+                const response = await fetch("/audio", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/octet-stream"
+                    },
+                    body: buffer.buffer
+                });
+
+                if (!response.ok) {
+                    console.error("Audio server error:", response.status);
+                }
+            } catch (error) {
+                console.error("Could not send audio:", error);
+            }
+        }
+
+        function stopMicrophone() {
+            if (processor) {
+                processor.disconnect();
+                processor.onaudioprocess = null;
+                processor = null;
+            }
+
+            if (microphone) {
+                microphone.disconnect();
+                microphone = null;
+            }
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+
+            frameBuffer = new Int16Array(BATCH_SIZE);
+            frameOffset = 0;
+
+            document.getElementById("start").disabled = false;
+            document.getElementById("stop").disabled = true;
+
+            status.textContent = "Status: Stopped";
+        }
+    </script>
+
+</body>
+</html>
